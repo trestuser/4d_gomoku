@@ -51,20 +51,20 @@ class Engine():
         self.screen.fill(self.colors["WHITE"])
         for x in range(self.shape[0]):
             for y in range(self.shape[1]):
-                for z in range(self.shape[2]):
-                    for w in range(self.shape[3]):
-                        pygame.draw.circle(
-                            self.screen,
-                            self.colors["BLACK"],
-                            (y * self.CELL_SIZE+self.STRIDE, x * self.CELL_SIZE+self.STRIDE),
+                color = self.colors["BLACK"]
+
+                if self.GAME_POLIGON[x, y, self.selected_point[2],
+                                     self.selected_point[3]] == -1:
+                    color = self.colors["RED"]
+                elif self.GAME_POLIGON[x, y, self.selected_point[2],
+                                       self.selected_point[3]] == 1:
+                    color = self.colors["BLUE"]
+
+                pygame.draw.circle(
+                    self.screen,
+                    color,
+                    (x * self.CELL_SIZE+self.STRIDE, y * self.CELL_SIZE+self.STRIDE),
                             self.RADIUS)
-                        # TODO прорисовка выбранных точек
-                        if self.GAME_POLIGON[x, y, z, w] == 1:
-                            pygame.draw.circle(
-                                self.screen,
-                                self.colors["RED"],
-                                (y * self.CELL_SIZE+self.STRIDE, x * self.CELL_SIZE+self.STRIDE),
-                                self.RADIUS)
         pygame.draw.circle(
             self.screen,
             self.colors["GREEN"],
@@ -93,5 +93,14 @@ class Engine():
             self.selected_point[0] -= 1
         elif event.key == pygame.K_d and self.selected_point[0] < self.shape[0] - 1:
             self.selected_point[0] += 1
-        #elif event.key == pygame.K_RETURN:
-        #    self.GAME_POLIGON[self.selected_point[0]; self.selected_point[1]] = self.plr_num
+        elif event.key == pygame.K_RETURN:
+            self.GAME_POLIGON[self.selected_point[0],
+                              self.selected_point[1],
+                              self.selected_point[2],
+                              self.selected_point[3]] = self.plr_num
+            self.plr_num *= -1
+            # print('ENTER')
+            # print(self.GAME_POLIGON[:, :,
+            #       self.selected_point[2],
+            #       self.selected_point[3]])
+

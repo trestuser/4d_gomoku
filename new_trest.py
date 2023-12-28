@@ -55,6 +55,7 @@ def game_loop():
                                    pygame.K_s,
                                    pygame.K_a,
                                    pygame.K_d,
+                                   pygame.K_RETURN
                                    ):
                     workspace.handle_arrow_keys(event)
                     
