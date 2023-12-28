@@ -34,27 +34,6 @@ class player():
 #     screen.blit(text, (50, 50))
 
 
-def handle_arrow_keys(event):
-    global selected_point
-    if event.key == pygame.K_LEFT and selected_point[2] > 0:
-        selected_point[2] -= 1
-    elif event.key == pygame.K_RIGHT and selected_point[2] < shape[2] - 1:
-        selected_point[2] += 1
-    elif event.key == pygame.K_UP and selected_point[3] < shape[3] - 1:
-        selected_point[3] += 1
-    elif event.key == pygame.K_DOWN and selected_point[3] > 0:
-        selected_point[3] -= 1
-    elif event.key == pygame.K_w and selected_point[1] > 0:
-        selected_point[1] -= 1
-    elif event.key == pygame.K_s and selected_point[1] < shape[1] - 1:
-        selected_point[1] += 1
-    elif event.key == pygame.K_a and selected_point[0] > 0:
-        selected_point[0] -= 1
-    elif event.key == pygame.K_d and selected_point[0] < shape[0] - 1:
-        selected_point[0] += 1
-
-
-
 def game_loop():
     clock = pygame.time.Clock()
     workspace = Engine()
@@ -77,9 +56,9 @@ def game_loop():
                                    pygame.K_a,
                                    pygame.K_d,
                                    ):
-                    handle_arrow_keys(event)
+                    workspace.handle_arrow_keys(event)
                     
-                    print(*selected_point)
+                    print(*workspace.selected_point)
             
             # elif event.type == pygame.MOUSEBUTTONDOWN:
             #     if event.button == 1:
