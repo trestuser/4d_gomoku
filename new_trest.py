@@ -11,6 +11,13 @@ from engine import Engine
 ## TODO добавление выбранных точек в структуру
 ## TODO отрисовка точек из структы
 
+dict = {
+    "first_player": [],
+    "second_player": []
+        }
+
+# def check_line()
+
 class teacher():
     """
     Отвечает ход машины
@@ -25,13 +32,8 @@ class player():
     def make_step(self):
         return np.random.randint()
 
-# def check_win(player):
-#     pass
-
-# # TODO переделать
-# def draw_info(text_list):
-#     text = font.render("akdfj;asdfkja;lkdfja;ldfjkasdf;jka", True, BLACK)
-#     screen.blit(text, (50, 50))
+def check_win(player):
+    pass
 
 
 def game_loop():
@@ -55,6 +57,7 @@ def game_loop():
                                    pygame.K_s,
                                    pygame.K_a,
                                    pygame.K_d,
+                                   pygame.K_RETURN
                                    ):
                     workspace.handle_arrow_keys(event)
                     
