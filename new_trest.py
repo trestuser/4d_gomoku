@@ -32,10 +32,6 @@ class player():
     def make_step(self):
         return np.random.randint()
 
-def check_win(player):
-    pass
-
-
 def game_loop():
     clock = pygame.time.Clock()
     workspace = Engine()

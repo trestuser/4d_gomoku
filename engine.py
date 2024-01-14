@@ -6,11 +6,15 @@ class Engine():
         основной класс, в котором находятся методы для прорисовки
         рабочего стола
     """
+
+
     def __init__(self):
         self.shape = (15, 15, 15, 15)
 
         self.plr_num = 1
         self.global_text = ""
+
+        self.last_selected = [[-10, -10, -10, -10], None]
 
         self.WINDOW_SIZE = (
             self.shape[1] * 30, 
@@ -44,6 +48,18 @@ class Engine():
         self.screen = pygame.display.set_mode(self.WINDOW_SIZE,
                                               pygame.RESIZABLE)
         pygame.display.set_caption('4D Gomoku')
+
+    def check_win(self, last_selected):
+        for k in range(-1, 2):
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    for q in range(-1, 2):
+                        if abs(k) + abs(i) + abs(j) + abs(q) != 0:
+                            print(last_selected[0][0] + k,
+                                  last_selected[0][1] + i,
+                                  last_selected[0][2] + j,
+                                  last_selected[0][3] + q)
+#                            if
 
     def redraw_board(self):
         pygame.init()
@@ -125,6 +141,9 @@ class Engine():
                                 self.selected_point[1],
                                 self.selected_point[2],
                                 self.selected_point[3]] = self.plr_num
+                self.last_selected[0] = self.selected_point
+                self.last_selected[1] = self.plr_num
+                self.check_win(self.last_selected)
                 self.plr_num *= -1
                 self.global_text = ""
             
