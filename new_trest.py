@@ -4,33 +4,33 @@ import sys
 from engine import Engine
 
 # TODO Добавить красивые переходы между осями
-# TODO Подсветка активного круга
 # TODO отображение координат по w,z на игровом поле
-# TODO добавить возможность хода
-## TODO переключение между игроками
-## TODO добавление выбранных точек в структуру
-## TODO отрисовка точек из структы
 
-dict = {
+dictionary = {
     "first_player": [],
     "second_player": []
         }
 
 # def check_line()
 
-class teacher():
+
+class Teacher:
     """
     Отвечает ход машины
     """
-    def make_step(self):
-        return np.random.randint()
-    
-class player():
+    make_step = np.random.randint()
+    # def make_step(self):
+    #     return np.random.randint()
+
+
+class Player:
     """
     Отвечает ход машины
     """
-    def make_step(self):
-        return np.random.randint()
+    make_step = np.random.randint()
+    # def make_step(self):
+    #     return np.random.randint()
+
 
 def game_loop():
     clock = pygame.time.Clock()
@@ -79,9 +79,8 @@ def game_loop():
         
         # draw_arrows()
 
-        
-
         clock.tick(workspace.FPS)
+
 
 if __name__ == "__main__":
     game_loop()
