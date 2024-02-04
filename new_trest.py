@@ -18,7 +18,7 @@ class Teacher:
     """
     Отвечает ход машины
     """
-    make_step = np.random.randint()
+    # make_step = np.random.randint()
     # def make_step(self):
     #     return np.random.randint()
 
@@ -27,7 +27,8 @@ class Player:
     """
     Отвечает ход машины
     """
-    make_step = np.random.randint()
+    # make_step = np.random.randint()
+    
     # def make_step(self):
     #     return np.random.randint()
 

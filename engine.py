@@ -1,5 +1,6 @@
 import numpy as np
 import pygame
+from typing import Optional, List
 
 
 class Engine:
@@ -9,21 +10,28 @@ class Engine:
     """
 
     def __init__(self):
-        self.shape = (15, 15, 15, 15)
+        TEMP_CONST = 3
+        self.shape = (TEMP_CONST, TEMP_CONST, TEMP_CONST, TEMP_CONST)
 
         self.plr_num = 1
         self.global_text = ""
 
+        self.GAME_MODE = 0 # 0 - игра с компьютером, 1 - игра с игроком
+
         self.last_selected = [[-10, -10, -10, -10], None]
 
         self.WINDOW_SIZE = (
-            self.shape[1] * 30, 
-            self.shape[0] * 30
+            self.shape[1] * 450/TEMP_CONST, 
+            self.shape[0] * 450/TEMP_CONST
             )
         
+        print(self.WINDOW_SIZE)
+        
         self.FPS = 30
+
         self.GAME_POLIGON = np.zeros(self.shape,
                                      dtype=int)
+        
         self.RADIUS = self.WINDOW_SIZE[0]//35
         self.CELL_SIZE = self.RADIUS*2
 
@@ -41,7 +49,8 @@ class Engine:
         # в зависимости от размера поля
 
         # self.font = pygame.font.Font(None, 36)
-        self.STRIDE = 40
+
+        self.STRIDE = self.WINDOW_SIZE[0] // TEMP_CONST
 
         self.selected_point = [0, 0, 0, 0]
         self.SELECTED_POINTS: list[tuple] = []
@@ -50,8 +59,15 @@ class Engine:
                                               pygame.RESIZABLE)
         pygame.display.set_caption('4D Gomoku')
 
+
+    def is_in_range(self, last_selected, vector, shift, TEMP_CONST):
+        coordinates = tuple(vector[i] * shift + last_selected[0][i] for i in range(4))
+        
+        return all(0 <= coord < TEMP_CONST for coord in coordinates)
+
     def check_win(self, last_selected):
         list_of_vectors = []
+
         for k in range(-1, 2):
             for i in range(-1, 2):
                 for j in range(-1, 2):
@@ -109,11 +125,13 @@ class Engine:
                 return True
 
         return False
-
+    
+    # TO DO переименовать фукнцию
     def redraw_board(self):
         pygame.init()
 
         font_text = pygame.font.Font('freesansbold.ttf', 32)
+        
         text = font_text.render(self.global_text,
                                 True,
                                 self.colors["BLACK"],
@@ -125,17 +143,45 @@ class Engine:
 
         pygame.display.flip()
 
-    def available_step(self):
+    
+
+    def available_step(self, make_step_poin: Optional[List] = None) -> bool:
         """
         Можно ли сходить в выбранную точку
         """
-        if self.GAME_POLIGON[self.selected_point[0],
-                             self.selected_point[1],
-                             self.selected_point[2],
-                             self.selected_point[3]] == 0:
+        if make_step_poin is None:
+            make_step_poin = self.selected_point
+
+        if self.GAME_POLIGON[make_step_poin[0],
+                             make_step_poin[1],
+                             make_step_poin[2],
+                             make_step_poin[3]] == 0:
             return True
         else:
             return False
+        
+    def AI_step(self):
+        """
+        Отвечает ход машины
+        """
+        make_step_poin =[x + np.random.randint(low=-1, high=1)  for x in self.last_selected[0]] 
+
+        while not self.available_step(make_step_poin):
+            make_step_poin =[x + np.random.randint(low=-1, high=1) for x in self.last_selected[0]]
+
+        self.GAME_POLIGON[make_step_poin[0],
+                            make_step_poin[1],
+                            make_step_poin[2],
+                            make_step_poin[3]] = self.plr_num * -1
+        
+        self.last_selected[0] = make_step_poin
+        self.last_selected[1] = self.plr_num
+
+        if self.check_win(self.last_selected):
+            print(self.plr_num, 'WIN')
+            self.global_text = ""
+            self.reset_game()
+
         
     def draw_board(self):
         self.screen.fill(self.colors["WHITE"])
@@ -156,6 +202,7 @@ class Engine:
                     color,
                     (x * self.CELL_SIZE+self.STRIDE, y * self.CELL_SIZE+self.STRIDE),
                     self.RADIUS)
+                
         pygame.draw.circle(
             self.screen,
             self.colors["GREEN"],
@@ -163,6 +210,13 @@ class Engine:
              self.selected_point[1] * self.CELL_SIZE+self.STRIDE),
             self.RADIUS
         )
+
+
+    def reset_game(self):
+        self.GAME_POLIGON = np.zeros(self.shape,
+                                     dtype=int)
+        return None
+
 
     def handle_arrow_keys(self, event):
         if event.key == pygame.K_LEFT and self.selected_point[2] > 0:
@@ -183,6 +237,7 @@ class Engine:
             self.selected_point[0] += 1
 
         elif event.key == pygame.K_RETURN:
+
             if self.available_step():
             
                 self.GAME_POLIGON[self.selected_point[0],
@@ -190,12 +245,19 @@ class Engine:
                                   self.selected_point[2],
                                   self.selected_point[3]] = self.plr_num
                 self.last_selected[0] = self.selected_point
-                self.last_selected[1][0] = self.plr_num
-                if self.check_win(self.last_selected):
-                    print(self.plr_num, 'WIN')
-                self.plr_num *= -1
-                self.global_text = ""
-
+                self.last_selected[1] = self.plr_num
+                if self.GAME_MODE == 0:
+                    if self.check_win(self.last_selected):
+                        print(self.plr_num, 'WIN')
+                        self.global_text = ""
+                        self.reset_game()
+                    self.AI_step()
+                else:
+                    if self.check_win(self.last_selected):
+                        print(self.plr_num, 'WIN')
+                        self.reset_game()
+                    self.plr_num *= -1
+                    self.global_text = ""
             else:
 
                 # TODO сделать глобальные надписи
